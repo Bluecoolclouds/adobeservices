@@ -19,35 +19,44 @@ const SUBSCRIPTION_PRICES: Record<string, { price: number; description: string; 
   "stable_1y": { price: 10455, description: "Adobe Creative Cloud - Стабильная", period: "1 год" },
 };
 
-function generateRobokassaLink(subscriptionType: string, userId: string, userName?: string): { paymentUrl: string; orderId: string; amount: number } {
+function generateRobokassaLink(subscriptionType: string, userId: string, userName?: string): { paymentUrl: string; orderId: number; amount: number } {
   const subscription = SUBSCRIPTION_PRICES[subscriptionType];
   if (!subscription) {
     throw new Error(`Unknown subscription type: ${subscriptionType}`);
   }
 
-  const orderId = `${userId}_${Date.now()}`;
+  const orderId = Math.floor(Date.now() / 1000);
   const amount = subscription.price;
 
   const merchantLogin = process.env.ROBOKASSA_MERCHANT_LOGIN || "demo";
   const password1 = process.env.ROBOKASSA_PASSWORD1 || "demo";
   const isTest = process.env.ROBOKASSA_TEST_MODE === "true" ? 1 : 0;
 
-  const signatureString = `${merchantLogin}:${amount}:${orderId}:${password1}`;
+  const shpParams = [
+    `Shp_subscriptionType=${subscriptionType}`,
+    `Shp_userId=${userId}`,
+  ];
+  if (userName) {
+    shpParams.push(`Shp_userName=${userName}`);
+  }
+  shpParams.sort();
+
+  const signatureString = `${merchantLogin}:${amount}:${orderId}:${password1}:${shpParams.join(":")}`;
   const signature = crypto.createHash("md5").update(signatureString).digest("hex");
 
   const params = new URLSearchParams({
     MerchantLogin: merchantLogin,
     OutSum: amount.toString(),
-    InvId: orderId,
-    Description: subscription.description,
+    InvId: orderId.toString(),
+    Description: `${subscription.description} - ${subscription.period}`,
     SignatureValue: signature,
     IsTest: isTest.toString(),
     Culture: "ru",
   });
 
-  if (userName) params.append("Shp_userName", userName);
-  params.append("Shp_userId", userId);
   params.append("Shp_subscriptionType", subscriptionType);
+  params.append("Shp_userId", userId);
+  if (userName) params.append("Shp_userName", userName);
 
   return {
     paymentUrl: `https://auth.robokassa.ru/Merchant/Index.aspx?${params.toString()}`,
@@ -56,7 +65,7 @@ function generateRobokassaLink(subscriptionType: string, userId: string, userNam
   };
 }
 
-async function notifyManager(eventType: string, userId: string, userName?: string, orderId?: string, subscriptionType?: string, amount?: number): Promise<void> {
+async function notifyManager(eventType: string, userId: string, userName?: string, orderId?: number, subscriptionType?: string, amount?: number): Promise<void> {
   const managerChatId = process.env.MANAGER_CHAT_ID;
   if (!managerChatId) return;
 
