@@ -6,11 +6,13 @@ import * as crypto from "crypto";
 import { bot } from "./bot";
 
 const SUBSCRIPTION_LABELS: Record<string, string> = {
-  "stable_1m": "Стабильная - 1 месяц",
-  "stable_2m": "Стабильная - 2 месяца",
-  "stable_3m": "Стабильная - 3 месяца",
-  "stable_6m": "Стабильная - 6 месяцев",
-  "stable_1y": "Стабильная - 1 год",
+  "stable_1m": "Adobe CC Стабильная - 1 месяц",
+  "stable_2m": "Adobe CC Стабильная - 2 месяца",
+  "stable_3m": "Adobe CC Стабильная - 3 месяца",
+  "stable_6m": "Adobe CC Стабильная - 6 месяцев",
+  "stable_1y": "Adobe CC Стабильная - 1 год",
+  "chatgpt_1m": "ChatGPT Plus - 1 месяц",
+  "chatgpt_1y": "ChatGPT Plus - 1 год",
 };
 
 export async function registerRoutes(

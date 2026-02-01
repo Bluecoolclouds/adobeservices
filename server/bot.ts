@@ -11,12 +11,14 @@ if (!token) {
 
 export const bot = new TelegramBot(token, { polling: true });
 
-const SUBSCRIPTION_PRICES: Record<string, { price: number; description: string; period: string }> = {
-  "stable_1m": { price: 1520, description: "Adobe Creative Cloud - Стабильная", period: "1 месяц" },
-  "stable_2m": { price: 2500, description: "Adobe Creative Cloud - Стабильная", period: "2 месяца" },
-  "stable_3m": { price: 3740, description: "Adobe Creative Cloud - Стабильная", period: "3 месяца" },
-  "stable_6m": { price: 6630, description: "Adobe Creative Cloud - Стабильная", period: "6 месяцев" },
-  "stable_1y": { price: 10455, description: "Adobe Creative Cloud - Стабильная", period: "1 год" },
+const SUBSCRIPTION_PRICES: Record<string, { price: number; description: string; period: string; category: string }> = {
+  "stable_1m": { price: 1520, description: "Adobe Creative Cloud - Стабильная", period: "1 месяц", category: "adobe" },
+  "stable_2m": { price: 2500, description: "Adobe Creative Cloud - Стабильная", period: "2 месяца", category: "adobe" },
+  "stable_3m": { price: 3740, description: "Adobe Creative Cloud - Стабильная", period: "3 месяца", category: "adobe" },
+  "stable_6m": { price: 6630, description: "Adobe Creative Cloud - Стабильная", period: "6 месяцев", category: "adobe" },
+  "stable_1y": { price: 10455, description: "Adobe Creative Cloud - Стабильная", period: "1 год", category: "adobe" },
+  "chatgpt_1m": { price: 990, description: "ChatGPT Plus", period: "1 месяц", category: "chatgpt" },
+  "chatgpt_1y": { price: 8900, description: "ChatGPT Plus", period: "1 год", category: "chatgpt" },
 };
 
 function generateRobokassaLink(subscriptionType: string, userId: string, userName?: string): { paymentUrl: string; orderId: number; amount: number } {
@@ -108,6 +110,7 @@ async function sendWelcome(chatId: number) {
     reply_markup: {
       inline_keyboard: [
         [{ text: "🎨 Adobe Creative Cloud", callback_data: "adobe_cc" }],
+        [{ text: "🤖 Аккаунт ChatGPT", callback_data: "chatgpt" }],
         [{ text: "📞 Поддержка", url: "https://t.me/wpnetwork_sup" }],
       ],
     },
@@ -157,6 +160,41 @@ async function sendStableInfo(chatId: number) {
   });
 }
 
+async function sendChatGPTInfo(chatId: number) {
+  const chatgptText = `🤖 <b>ChatGPT Plus</b>
+
+<b>Включено:</b>
+✔ Официальный статус ChatGPT Plus
+✔ Полный доступ ко всем премиум-функциям
+✔ История чатов и настройки сохраняются
+✔ Быстрая активация после оплаты
+
+🔐 <b>Безопасность и полный контроль</b>
+
+✔ Аккаунт полностью принадлежит вам
+✔ Можно менять почту, пароль и настройки в любое время
+✔ Используем только официальные способы активации
+
+Мы остаёмся с вами до полного подтверждения корректной работы подписки.
+
+❓ <b>Коротко о главном</b>
+
+Безопасно? — Да, только официальная активация
+Чаты пропадут? — Нет, всё сохраняется
+Можно сменить почту позже? — Да, в любой момент`;
+
+  await bot.sendMessage(chatId, chatgptText, {
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "1 месяц | 990 ₽", callback_data: "buy_chatgpt_1m" }],
+        [{ text: "1 год | 8900 ₽", callback_data: "buy_chatgpt_1y" }],
+        [{ text: "🏠 В меню", callback_data: "menu" }],
+      ],
+    },
+  });
+}
+
 async function sendPaymentLink(chatId: number, userId: string, userName: string | undefined, subscriptionType: string) {
   const subscription = SUBSCRIPTION_PRICES[subscriptionType];
   if (!subscription) return;
@@ -173,12 +211,14 @@ async function sendPaymentLink(chatId: number, userId: string, userName: string 
 
 Нажмите кнопку ниже для оплаты:`;
 
+  const backCallback = subscription.category === "chatgpt" ? "chatgpt" : "stable";
+
   await bot.sendMessage(chatId, paymentText, {
     parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
         [{ text: "💳 Оплатить", url: paymentUrl }],
-        [{ text: "⬅️ Назад", callback_data: "stable" }],
+        [{ text: "⬅️ Назад", callback_data: backCallback }],
         [{ text: "🏠 В меню", callback_data: "menu" }],
       ],
     },
@@ -195,6 +235,7 @@ async function sendDefault(chatId: number) {
     reply_markup: {
       inline_keyboard: [
         [{ text: "🎨 Adobe Creative Cloud", callback_data: "adobe_cc" }],
+        [{ text: "🤖 Аккаунт ChatGPT", callback_data: "chatgpt" }],
         [{ text: "📞 Поддержка", url: "https://t.me/wpnetwork_sup" }],
       ],
     },
@@ -222,7 +263,9 @@ bot.on("callback_query", async (query) => {
       await sendSubscriptionTypes(chatId);
     } else if (data === "stable") {
       await sendStableInfo(chatId);
-    } else if (data.startsWith("buy_stable_")) {
+    } else if (data === "chatgpt") {
+      await sendChatGPTInfo(chatId);
+    } else if (data.startsWith("buy_stable_") || data.startsWith("buy_chatgpt_")) {
       const subscriptionType = data.replace("buy_", "");
       await sendPaymentLink(chatId, userId, userName, subscriptionType);
     }
