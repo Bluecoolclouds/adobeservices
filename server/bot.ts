@@ -1,5 +1,7 @@
 import TelegramBot from "node-telegram-bot-api";
 import * as crypto from "crypto";
+import * as fs from "fs";
+import * as path from "path";
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
@@ -89,7 +91,10 @@ async function sendWelcome(chatId: number) {
 ❓ Есть вопросы? Пиши в поддержку @wpnetwork_sup
 💡 Наш канал @weplanetnetwork`;
 
-  await bot.sendMessage(chatId, welcomeText, {
+  const photoPath = path.join(process.cwd(), "client", "public", "welcome.jpg");
+  
+  await bot.sendPhoto(chatId, photoPath, {
+    caption: welcomeText,
     parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
