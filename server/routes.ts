@@ -13,6 +13,9 @@ const SUBSCRIPTION_LABELS: Record<string, string> = {
   "stable_1y": "Adobe CC Стабильная - 1 год",
   "chatgpt_1m": "ChatGPT Plus - 1 месяц",
   "chatgpt_1y": "ChatGPT Plus - 1 год",
+  "google_pro_1m": "Google AI Pro 2TB - 1 месяц",
+  "google_pro_1y": "Google AI Pro 2TB - 12 месяцев",
+  "google_ultra_1m": "Google AI Ultra - 1 месяц",
 };
 
 export async function registerRoutes(

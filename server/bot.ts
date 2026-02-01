@@ -19,6 +19,9 @@ const SUBSCRIPTION_PRICES: Record<string, { price: number; description: string; 
   "stable_1y": { price: 10455, description: "Adobe Creative Cloud - Стабильная", period: "1 год", category: "adobe" },
   "chatgpt_1m": { price: 990, description: "ChatGPT Plus", period: "1 месяц", category: "chatgpt" },
   "chatgpt_1y": { price: 8900, description: "ChatGPT Plus", period: "1 год", category: "chatgpt" },
+  "google_pro_1m": { price: 1500, description: "Google AI Pro 2TB VEO 3", period: "1 месяц", category: "google" },
+  "google_pro_1y": { price: 3000, description: "Google AI Pro 2TB VEO 3", period: "12 месяцев", category: "google" },
+  "google_ultra_1m": { price: 4500, description: "Google AI Ultra", period: "1 месяц", category: "google" },
 };
 
 function generateRobokassaLink(subscriptionType: string, userId: string, userName?: string): { paymentUrl: string; orderId: number; amount: number } {
@@ -111,6 +114,7 @@ async function sendWelcome(chatId: number) {
       inline_keyboard: [
         [{ text: "🎨 Adobe Creative Cloud", callback_data: "adobe_cc" }],
         [{ text: "🤖 Аккаунт ChatGPT", callback_data: "chatgpt" }],
+        [{ text: "🔷 Google AI Pro / Ultra", callback_data: "google_ai" }],
         [{ text: "📞 Поддержка", url: "https://t.me/wpnetwork_sup" }],
       ],
     },
@@ -195,6 +199,39 @@ async function sendChatGPTInfo(chatId: number) {
   });
 }
 
+async function sendGoogleAIInfo(chatId: number) {
+  const googleText = `🔷 <b>GEMINI 3.0 PRO: Превосходство над GPT-5.1</b>
+
+🏆 <b>Объективные цифры (Тест HLE):</b>
+Gemini 3 Pro: 38.3% (Лидер рынка)
+GPT-5: 25.3%
+Результат: Gemini решает сложные задачи в 1.5 раза эффективнее.
+
+⚡ <b>Ключевые преимущества:</b>
+💎 1 Млн токенов: Помнит контекст книг, видео и кода. Не теряет нить диалога.
+🕵️‍♂️ Deep Research: ИИ сам ищет информацию в сети, читает файлы и готовит отчеты.
+
+🎁 <b>Что входит в подписку:</b>
+🚀 Gemini 3.0 Pro — Основная модель
+🍌 Nano Banana Pro — Эксклюзивный доступ
+🎬 Veo 3.1 — Генерация реалистичных видео (8 сек) со звуком
+📚 NotebookLM Pro — Лимиты увеличены в 5 раз
+☁️ Google One 2 TB — Хранилище для Drive, Photos, Gmail
+📝 Workspace — ИИ-ассистент в Docs, Sheets и Gmail`;
+
+  await bot.sendMessage(chatId, googleText, {
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "Pro 2TB 1 мес (гар. 1 мес) | 1500 ₽", callback_data: "buy_google_pro_1m" }],
+        [{ text: "Pro 2TB 12 мес (гар. 3 мес) | 3000 ₽", callback_data: "buy_google_pro_1y" }],
+        [{ text: "Ultra 45000 кредитов 1 мес | 4500 ₽", callback_data: "buy_google_ultra_1m" }],
+        [{ text: "🏠 В меню", callback_data: "menu" }],
+      ],
+    },
+  });
+}
+
 async function sendPaymentLink(chatId: number, userId: string, userName: string | undefined, subscriptionType: string) {
   const subscription = SUBSCRIPTION_PRICES[subscriptionType];
   if (!subscription) return;
@@ -211,7 +248,12 @@ async function sendPaymentLink(chatId: number, userId: string, userName: string 
 
 Нажмите кнопку ниже для оплаты:`;
 
-  const backCallback = subscription.category === "chatgpt" ? "chatgpt" : "stable";
+  const backCallbacks: Record<string, string> = {
+    "chatgpt": "chatgpt",
+    "google": "google_ai",
+    "adobe": "stable"
+  };
+  const backCallback = backCallbacks[subscription.category] || "menu";
 
   await bot.sendMessage(chatId, paymentText, {
     parse_mode: "HTML",
@@ -236,6 +278,7 @@ async function sendDefault(chatId: number) {
       inline_keyboard: [
         [{ text: "🎨 Adobe Creative Cloud", callback_data: "adobe_cc" }],
         [{ text: "🤖 Аккаунт ChatGPT", callback_data: "chatgpt" }],
+        [{ text: "🔷 Google AI Pro / Ultra", callback_data: "google_ai" }],
         [{ text: "📞 Поддержка", url: "https://t.me/wpnetwork_sup" }],
       ],
     },
@@ -265,7 +308,9 @@ bot.on("callback_query", async (query) => {
       await sendStableInfo(chatId);
     } else if (data === "chatgpt") {
       await sendChatGPTInfo(chatId);
-    } else if (data.startsWith("buy_stable_") || data.startsWith("buy_chatgpt_")) {
+    } else if (data === "google_ai") {
+      await sendGoogleAIInfo(chatId);
+    } else if (data.startsWith("buy_")) {
       const subscriptionType = data.replace("buy_", "");
       await sendPaymentLink(chatId, userId, userName, subscriptionType);
     }
