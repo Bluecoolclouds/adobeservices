@@ -238,8 +238,6 @@ async function sendPaymentLink(chatId: number, userId: string, userName: string 
 
   const { paymentUrl, orderId, amount } = generateRobokassaLink(subscriptionType, userId, userName);
 
-  await notifyManager("new_order", userId, userName, orderId, subscriptionType, amount);
-
   const paymentText = `💳 <b>Оплата подписки</b>
 
 📦 ${subscription.description}
