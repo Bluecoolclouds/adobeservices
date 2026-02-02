@@ -4,7 +4,7 @@ services:
     container_name: telegram-bot
     restart: always
     ports:
-      - "5000:5000"
+      - "8080:5000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/botdb
