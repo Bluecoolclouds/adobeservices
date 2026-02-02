@@ -76,7 +76,7 @@ export async function registerRoutes(
         const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType as string] || Shp_subscriptionType;
         const successMessage = `✅ <b>Оплата прошла успешно!</b>\n\n` +
           `📦 Подписка: ${subscriptionLabel}\n\n` +
-          `Спасибо за покупку! Менеджер свяжется с вами в ближайшее время для выдачи подписки.\n\n` +
+          `Спасибо за покупку!\n\n` +
           `📞 Поддержка: @wpnetwork_sup`;
         
         await bot.sendMessage(Shp_userId as string, successMessage, { parse_mode: "HTML" });
@@ -91,11 +91,10 @@ export async function registerRoutes(
       <head>
         <title>Оплата успешна</title>
         <meta charset="utf-8">
-        <meta http-equiv="refresh" content="2;url=https://t.me/weplanetnetwork_bot">
+        <meta http-equiv="refresh" content="0;url=https://t.me/weplanetnetwork_bot">
       </head>
       <body style="font-family: Arial; text-align: center; padding: 50px;">
-        <h1>Оплата прошла успешно!</h1>
-        <p>Переход в бота через 2 секунды...</p>
+        <p>Переход в бота...</p>
         <p><a href="https://t.me/weplanetnetwork_bot">Перейти в бота</a></p>
       </body>
       </html>
@@ -125,11 +124,10 @@ export async function registerRoutes(
       <head>
         <title>Ошибка оплаты</title>
         <meta charset="utf-8">
-        <meta http-equiv="refresh" content="2;url=https://t.me/weplanetnetwork_bot">
+        <meta http-equiv="refresh" content="0;url=https://t.me/weplanetnetwork_bot">
       </head>
       <body style="font-family: Arial; text-align: center; padding: 50px;">
-        <h1>Оплата не прошла</h1>
-        <p>Переход в бота через 2 секунды...</p>
+        <p>Переход в бота...</p>
         <p><a href="https://t.me/weplanetnetwork_bot">Перейти в бота</a></p>
       </body>
       </html>
