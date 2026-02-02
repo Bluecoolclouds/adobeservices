@@ -1,0 +1,36 @@
+root@[SE]144090:/opt/adobe-bot# apt install nginx -y
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+nginx is already the newest version (1.24.0-2ubuntu7.5).
+0 upgraded, 0 newly installed, 0 to remove and 61 not upgraded.
+root@[SE]144090:/opt/adobe-bot# nano /etc/nginx/sites-available/adobe-bot
+root@[SE]144090:/opt/adobe-bot# ln -s /etc/nginx/sites-available/adobe-bot /etc/nginx/sites-enabled/
+nginx -t
+systemctl reload nginx
+certbot --nginx -d weplanetnetwork.online
+2026/02/02 15:54:36 [warn] 3614607#3614607: "ssl_stapling" ignored, no OCSP responder URL in the certificate "/etc/letsencrypt/live/panel.phasmavpn.ru/fullchain.pem"
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+nginx.service is not active, cannot reload.
+Saving debug log to /var/log/letsencrypt/letsencrypt.log
+Requesting a certificate for weplanetnetwork.online
+Encountered exception during recovery: certbot.errors.MisconfigurationError: nginx restart failed:
+2026/02/02 15:54:40 [warn] 3614675#3614675: "ssl_stapling" ignored, no OCSP responder URL in the certificate "/etc/letsencrypt/live/panel.phasmavpn.ru/fullchain.pem"
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] still could not bind()
+nginx restart failed:
+2026/02/02 15:54:38 [warn] 3614635#3614635: "ssl_stapling" ignored, no OCSP responder URL in the certificate "/etc/letsencrypt/live/panel.phasmavpn.ru/fullchain.pem"
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] bind() to 0.0.0.0:443 failed (98: Address already in use)
+nginx: [emerg] still could not bind()
+
+Ask for help or search for solutions at https://community.letsencrypt.org. See the logfile /var/log/letsencrypt/letsencrypt.log or re-run Certbot with -v for more details.
+root@[SE]144090:/opt/adobe-bot#
