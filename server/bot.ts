@@ -12,7 +12,7 @@ if (!token) {
 export const bot = new TelegramBot(token, { polling: true });
 
 const SUBSCRIPTION_PRICES: Record<string, { price: number; description: string; period: string; category: string }> = {
-  "stable_1m": { price: 1, description: "Adobe Creative Cloud - Стабильная", period: "1 месяц", category: "adobe" },
+  "stable_1m": { price: 1520, description: "Adobe Creative Cloud - Стабильная", period: "1 месяц", category: "adobe" },
   "stable_2m": { price: 2500, description: "Adobe Creative Cloud - Стабильная", period: "2 месяца", category: "adobe" },
   "stable_3m": { price: 3740, description: "Adobe Creative Cloud - Стабильная", period: "3 месяца", category: "adobe" },
   "stable_6m": { price: 6630, description: "Adobe Creative Cloud - Стабильная", period: "6 месяцев", category: "adobe" },
@@ -155,7 +155,7 @@ async function sendStableInfo(chatId: number) {
     parse_mode: "HTML",
     reply_markup: {
       inline_keyboard: [
-        [{ text: "1 месяц | 1 ₽ (тест)", callback_data: "buy_stable_1m" }, { text: "2 месяца | 2500 ₽", callback_data: "buy_stable_2m" }],
+        [{ text: "1 месяц | 1520 ₽", callback_data: "buy_stable_1m" }, { text: "2 месяца | 2500 ₽", callback_data: "buy_stable_2m" }],
         [{ text: "3 месяца | 3740 ₽", callback_data: "buy_stable_3m" }, { text: "6 месяцев | 6630 ₽", callback_data: "buy_stable_6m" }],
         [{ text: "1 год | 10455 ₽", callback_data: "buy_stable_1y" }],
         [{ text: "🏠 В меню", callback_data: "menu" }],
