@@ -88,11 +88,15 @@ export async function registerRoutes(
     res.send(`
       <!DOCTYPE html>
       <html>
-      <head><title>Оплата успешна</title><meta charset="utf-8"></head>
+      <head>
+        <title>Оплата успешна</title>
+        <meta charset="utf-8">
+        <meta http-equiv="refresh" content="2;url=https://t.me/weplanetnetwork_bot">
+      </head>
       <body style="font-family: Arial; text-align: center; padding: 50px;">
         <h1>Оплата прошла успешно!</h1>
-        <p>Спасибо за покупку. Менеджер свяжется с вами в ближайшее время.</p>
-        <p><a href="https://t.me/wpnetwork_sup">Связаться с поддержкой</a></p>
+        <p>Переход в бота через 2 секунды...</p>
+        <p><a href="https://t.me/weplanetnetwork_bot">Перейти в бота</a></p>
       </body>
       </html>
     `);
@@ -118,11 +122,15 @@ export async function registerRoutes(
     res.send(`
       <!DOCTYPE html>
       <html>
-      <head><title>Ошибка оплаты</title><meta charset="utf-8"></head>
+      <head>
+        <title>Ошибка оплаты</title>
+        <meta charset="utf-8">
+        <meta http-equiv="refresh" content="2;url=https://t.me/weplanetnetwork_bot">
+      </head>
       <body style="font-family: Arial; text-align: center; padding: 50px;">
         <h1>Оплата не прошла</h1>
-        <p>К сожалению, оплата не была завершена.</p>
-        <p><a href="https://t.me/wpnetwork_sup">Связаться с поддержкой</a></p>
+        <p>Переход в бота через 2 секунды...</p>
+        <p><a href="https://t.me/weplanetnetwork_bot">Перейти в бота</a></p>
       </body>
       </html>
     `);
