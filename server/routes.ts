@@ -45,11 +45,28 @@ export async function registerRoutes(
       if (SignatureValue?.toUpperCase() === expectedSignature) {
         console.log(`Payment confirmed: InvId=${InvId}, OutSum=${OutSum}, User=${Shp_userId}`);
         
+        const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType] || Shp_subscriptionType;
+        
+        // Отправка уведомления пользователю
+        if (Shp_userId) {
+          try {
+            const userMessage = `✅ <b>Оплата прошла успешно!</b>\n\n` +
+              `📦 Подписка: ${subscriptionLabel}\n\n` +
+              `Спасибо за покупку!\n\n` +
+              `📞 Поддержка: @wpnetwork_sup`;
+            
+            await bot.sendMessage(Shp_userId, userMessage, { parse_mode: "HTML" });
+          } catch (error) {
+            console.error("Failed to send success message to user:", error);
+          }
+        }
+        
+        // Отправка уведомления менеджеру
         const managerChatId = process.env.MANAGER_CHAT_ID;
         if (managerChatId) {
           const message = `✅ <b>Оплата подтверждена!</b>\n\n` +
             `👤 Пользователь: ${Shp_userName ? `@${Shp_userName}` : Shp_userId}\n` +
-            `📦 Подписка: ${SUBSCRIPTION_LABELS[Shp_subscriptionType] || Shp_subscriptionType}\n` +
+            `📦 Подписка: ${subscriptionLabel}\n` +
             `💰 Сумма: ${OutSum}₽\n` +
             `🔢 ID заказа: ${InvId}\n\n` +
             `📧 Свяжитесь с клиентом для выдачи подписки!`;
@@ -69,22 +86,6 @@ export async function registerRoutes(
   });
 
   app.get("/api/robokassa/success", async (req, res) => {
-    const { Shp_userId, Shp_subscriptionType } = req.query;
-    
-    if (Shp_userId) {
-      try {
-        const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType as string] || Shp_subscriptionType;
-        const successMessage = `✅ <b>Оплата прошла успешно!</b>\n\n` +
-          `📦 Подписка: ${subscriptionLabel}\n\n` +
-          `Спасибо за покупку!\n\n` +
-          `📞 Поддержка: @wpnetwork_sup`;
-        
-        await bot.sendMessage(Shp_userId as string, successMessage, { parse_mode: "HTML" });
-      } catch (error) {
-        console.error("Failed to send success message to user:", error);
-      }
-    }
-    
     res.send(`
       <!DOCTYPE html>
       <html>
@@ -104,6 +105,7 @@ export async function registerRoutes(
   app.get("/api/robokassa/fail", async (req, res) => {
     const { Shp_userId, Shp_subscriptionType } = req.query;
     
+    // Отправка уведомления пользователю о неудачной оплате
     if (Shp_userId) {
       try {
         const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType as string] || Shp_subscriptionType;
