@@ -16,10 +16,12 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm ci --only=production
+RUN npm ci
 
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/client/public ./client/public
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/shared ./shared
 
 EXPOSE 5000
 

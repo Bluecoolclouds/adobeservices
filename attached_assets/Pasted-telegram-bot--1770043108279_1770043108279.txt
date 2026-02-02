@@ -1,0 +1,30 @@
+telegram-bot  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+telegram-bot  |
+telegram-bot  | error: relation "greetings" does not exist
+telegram-bot  |     at /app/dist/index.cjs:68:13326
+telegram-bot  |     at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+telegram-bot  |     at async /app/dist/index.cjs:74:96963
+telegram-bot  |     at async xd.getGreetings (/app/dist/index.cjs:74:99923)
+telegram-bot  |     at async gw (/app/dist/index.cjs:183:11)
+telegram-bot  |     at async /app/dist/index.cjs:183:1125 {
+telegram-bot  |   length: 108,
+telegram-bot  |   severity: 'ERROR',
+telegram-bot  |   code: '42P01',
+telegram-bot  |   detail: undefined,
+telegram-bot  |   hint: undefined,
+telegram-bot  |   position: '29',
+telegram-bot  |   internalPosition: undefined,
+telegram-bot  |   internalQuery: undefined,
+telegram-bot  |   where: undefined,
+telegram-bot  |   schema: undefined,
+telegram-bot  |   table: undefined,
+telegram-bot  |   column: undefined,
+telegram-bot  |   dataType: undefined,
+telegram-bot  |   constraint: undefined,
+telegram-bot  |   file: 'parse_relation.c',
+telegram-bot  |   line: '1392',
+telegram-bot  |   routine: 'parserOpenTable'
+telegram-bot  | }
+telegram-bot  |
+telegram-bot  | Node.js v20.20.0
+root@[SE]144090:/opt/adobe-bot#
