@@ -68,7 +68,23 @@ export async function registerRoutes(
     }
   });
 
-  app.get("/api/robokassa/success", (req, res) => {
+  app.get("/api/robokassa/success", async (req, res) => {
+    const { Shp_userId, Shp_subscriptionType } = req.query;
+    
+    if (Shp_userId) {
+      try {
+        const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType as string] || Shp_subscriptionType;
+        const successMessage = `✅ <b>Оплата прошла успешно!</b>\n\n` +
+          `📦 Подписка: ${subscriptionLabel}\n\n` +
+          `Спасибо за покупку! Менеджер свяжется с вами в ближайшее время для выдачи подписки.\n\n` +
+          `📞 Поддержка: @wpnetwork_sup`;
+        
+        await bot.sendMessage(Shp_userId as string, successMessage, { parse_mode: "HTML" });
+      } catch (error) {
+        console.error("Failed to send success message to user:", error);
+      }
+    }
+    
     res.send(`
       <!DOCTYPE html>
       <html>
@@ -82,7 +98,23 @@ export async function registerRoutes(
     `);
   });
 
-  app.get("/api/robokassa/fail", (req, res) => {
+  app.get("/api/robokassa/fail", async (req, res) => {
+    const { Shp_userId, Shp_subscriptionType } = req.query;
+    
+    if (Shp_userId) {
+      try {
+        const subscriptionLabel = SUBSCRIPTION_LABELS[Shp_subscriptionType as string] || Shp_subscriptionType;
+        const failMessage = `❌ <b>Оплата не прошла</b>\n\n` +
+          `📦 Подписка: ${subscriptionLabel}\n\n` +
+          `К сожалению, оплата не была завершена. Попробуйте ещё раз или свяжитесь с поддержкой.\n\n` +
+          `📞 Поддержка: @wpnetwork_sup`;
+        
+        await bot.sendMessage(Shp_userId as string, failMessage, { parse_mode: "HTML" });
+      } catch (error) {
+        console.error("Failed to send fail message to user:", error);
+      }
+    }
+    
     res.send(`
       <!DOCTYPE html>
       <html>
